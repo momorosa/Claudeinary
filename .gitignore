@@ -35,3 +35,7 @@ dist-ssr
 Thumbs.db
 
 node_modules/
+
+# macOS metadata 
+._*
+.vercel

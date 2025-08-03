@@ -1,30 +1,24 @@
-import { Suspense } from 'react'
-import { Loader, Html } from '@react-three/drei'
-import { Canvas } from '@react-three/fiber'
-import UI from './components/UI.jsx'
-import FloatingCheese from "./components/FloatingCheese.jsx"
+import { Routes, Route, useNavigate } from 'react-router-dom'
+import Intro from './pages/Intro.jsx'
+import Claudeinary from './pages/Claudeinary.jsx'
 
 function App() {
-    return (
-    <>
-        <Canvas
-            className="fixed inset-0 pointer-events-none"
-            flat
-            gl={{ antialias: false }}
-            dpr={[1, 1.5]}
-            camera={{ position: [0, 0, 10], fov: 20, near: 0.01, far: 95 }}
-        >
-            <color attach="background" args={["#ffbf40"]} />
+    // const navigate = useNavigate()
 
-            <Suspense fallback={<Html center>Loading…</Html>}>
-                <FloatingCheese />
-            </Suspense>
-            
-        </Canvas>   
-        <Loader containerStyles={{ zIndex: 50 }} />
-        <UI />    
-    </>
-  )
+    return (
+        <>
+            <Routes>
+                <Route
+                    path="/" 
+                    element={ <Intro />}
+                />
+                <Route 
+                    path="/claudeinary"
+                    element={ <Claudeinary />}
+                />
+            </Routes>
+        </>
+    )
 }
 
 export default App

@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+@theme {
+    --color-warm-gray: #202020;
+    --color-warm-gray-dark: #171717;
+    --color-warm-gray-light: #F0F0F0;
+    --color-warm-gray-medium: #747474;
+
+    --font-primary: "Montserrat", "sans-serif";
+}
+
 #root {
     width: 100vw;
     height: 100vh;
