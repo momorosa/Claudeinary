@@ -3,7 +3,7 @@ import Button from "./Button"
 export default function UI() {
     return (
         <main className="absolute left-0 top-0 w-screen z-10 pointer-events-auto">
-            <div className="w-2/3 lg:w-auto absolute right-6 bottom-6">
+            <div className="w-3/4 lg:w-auto absolute right-6 bottom-6">
                 <img src="src/assets/cheesedrawing.png" />
             </div>
 
@@ -13,7 +13,7 @@ export default function UI() {
                     Claude_
                 </h1>
                 <p className="w-1/2 mt-2 lg:mt-10 md:text-3xl text-1xl font-medium">
-                    Chef Claude turns whatever’s in your fridge into a chef-worthy dish instantly.
+                    Turns whatever’s in your fridge into a chef-worthy dish instantly.
                 </p>
                 <Button
                     href="/claudeinary"
@@ -25,6 +25,19 @@ export default function UI() {
                     Get your recipes!
                 </Button>
             </Section>
+            <div className="flex gap-2 items-center absolute left-8 bottom-6 px-10 py-4 hover:text-white transition delay-150 duration-300 ease-in-out">
+                <span class="relative flex size-3">
+                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-black opacity-75"></span>
+                    <span class="relative inline-flex size-3 rounded-full bg-black"></span>
+                </span>
+                <a 
+                    href = "https://quietbold.com"
+                    target = "_blank"
+                    rel = "noreferrer noopener"
+                >
+                    Rosa Choi | Made with curiosity
+                </a>
+            </div>
         </main>
     )
 }

@@ -24,7 +24,7 @@ export default forwardRef(function ClaudeRecipe({ recipe }, ref) {
                             tabIndex={ 0 }
                             aria-label={ favorite ? "Remove from favorites" : "Add to favorites" }
                             onClick={ toggleFavorite }
-                            className={`material-icons hover:cursor-pointer select-none
+                            className={`material-icons hover:cursor-pointer select-none transition delay-150 duration-300 ease-in-out
                                         ${favorite ? "text-red-500" : "text-gray-300"}`}
                         >
                             { favorite ? "favorite" : "favorite_border" }

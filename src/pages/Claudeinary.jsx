@@ -3,6 +3,7 @@ import ClaudeRecipe from '../components/ClaudeRecipe.jsx'
 import IngredientsList from '../components/IngredientsList.jsx'
 import { fetchRecipe } from '../fetchAPI.js'
 import Button from '../components/Button.jsx'
+import Navbar from '../components/Navbar.jsx'
 
 export default function Claudeinary() {
     const [ ingredients, setIngredients ] = useState([])
@@ -26,18 +27,13 @@ export default function Claudeinary() {
                 body: JSON.stringify({ prompt: base.image_prompt })
             })
 
-            console.log(imgRes)
-
             if(!imgRes.ok) {
                 console.error("Image API error", await imgRes.text())
                 return alert("Sorry, I couldn’t generate the photo.")
             }
 
             const imgData = await imgRes.json();
-            console.log("IMAGE JSON ➜", imgData);   // <= add this
             const { url } = imgData;
-
-            // const { url } = await imgRes.json()
 
             if(!url) {
                 console.error("Image API responded without a URL")
@@ -66,7 +62,8 @@ export default function Claudeinary() {
         setRecipe(null)
     }
 
-    return(
+    return(<>
+        <Navbar />
         <main className="max-w-[1024px] mx-auto h-auto mb-50 p-10 font-primary">
             <section>
                 {/* My Favorites will go here */}
@@ -104,8 +101,8 @@ export default function Claudeinary() {
             <section>
                 { ingredients.length > 0 && 
                 <IngredientsList 
-                    ingredients = { ingredients } 
-                    getRecipe = { getRecipe }
+                ingredients = { ingredients } 
+                getRecipe = { getRecipe }
                 />}
             </section>
             {recipe && (
@@ -123,5 +120,5 @@ export default function Claudeinary() {
                 </section>          
             )}
         </main>
-    )
+    </>)
 }
