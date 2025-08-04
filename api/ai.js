@@ -5,12 +5,17 @@ You are a friendly, slightly cheeky recipe assistant. A user will give you a lis
 
 Feel free to add a few basic extras (like salt, pepper, or olive oil), but don't go wild with new ingredients unless absolutely necessary.
 
-If the user includes something inedible (like rubber ducks, socks, car keys, or other non-food items), don't panic—just respond with playful humor. Kindly let them know you won’t be using that in the recipe, but still generate a solid recipe using the edible items.
+If the user includes something inedible (like rubber ducks, socks, car keys, or other non-food items), don't panic, just respond with playful humor in the description. Kindly let them know you won’t be using that in the recipe, but still generate a solid recipe using the edible items.
 
-Format your response in markdown with the following structure:
-- A title for the recipe.
-- A section titled "Ingredients" with a bullet-point list.
-- A section titled "Instructions" with numbered steps.
+Return ONLY valid JSON in this exact shape:
+{
+  "title": "string",
+  "ingredients": ["array", "of", "strings"],
+  "steps": ["array", "of", "strings"],
+  "description": "string",
+  "image_prompt": "short vivid prompt for a hero photo"
+}
+No markdown, no extra keys, no prose.
 
 Keep your tone light, warm, and helpful—like a friend who's great in the kitchen. A little humor is welcome, but keep it kind and inclusive. Make it concise and easy to follow.
 
@@ -20,55 +25,35 @@ Ready, chef?
 export default async function handler(req, res) {
     // Only accept POST requests
     if (req.method !== "POST") {
-        res.status(405).json({ message: "Method not allowed" })
-        return
+        return res.status(405).json({ message: "Method not allowed" })
     }
 
-    // Manually read the request body
-    let rawBody = "";
-    req.on("data", chunk => {
-        rawBody += chunk
-    })
+    const { ingredients } = req.body ?? {}
+    
+    if(!Array.isArray(ingredients) || ingredients.length === 0 ) {
+        return res.status(400).json({ message: "Invalid ingredients"})
+    }
 
-    req.on("end", async () => {
-        try {
-        // Optionally, log the raw request body for debugging
-        // console.log("Raw request body:", rawBody)
+    try {
+        const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-        // Parse the JSON body
-        const { ingredients } = JSON.parse(rawBody)
-
-        if (!ingredients || !Array.isArray(ingredients)) {
-            res.status(400).json({ message: "Invalid ingredients" })
-            return
-        }
-
-        const ingredientsString = ingredients.join(", ")
-
-        const anthropic = new Anthropic({
-            apiKey: process.env.ANTHROPIC_API_KEY,
-            // Keep it false since this is running server-side
-            dangerouslyAllowBrowser: false,
-        })
-
-        const msg = await anthropic.messages.create({
+        const { content } = await anthropic.messages.create({
             model: "claude-3-haiku-20240307",
             max_tokens: 1024,
             system: SYSTEM_PROMPT,
             messages: [
                 {
                     role: "user",
-                    content: `I have ${ingredientsString}. Please give me a recipe you'd recommend I make!`,
+                    content: `Ingredients: ${ingredients.join (", ")}`,
                 },
             ],
         })
 
-        console.log("Anthropic response:", msg)
+        const recipeObj = JSON.parse(content[0].text)
 
-        res.status(200).json({ recipe: msg.content[0].text })
-        } catch (error) {
-            console.error("Error fetching recipe:", error.message, error.stack)
-            res.status(500).json({ error: "Error generating recipe" })
-        }
-    })
+        return res.status(200).json(recipeObj)
+    } catch (err) {
+        console.log("Antrhopic error:", err)
+        return res.status(500).json({ message: "Failed to generate recipe" })
+    } 
 }

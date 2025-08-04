@@ -6,7 +6,7 @@ import Button from '../components/Button.jsx'
 
 export default function Claudeinary() {
     const [ ingredients, setIngredients ] = useState([])
-    const [ recipe, setRecipe ] = useState("")
+    const [ recipe, setRecipe ] = useState(null)
     const recipeSection = useRef(null)
 
     useEffect(() => {
@@ -18,9 +18,37 @@ export default function Claudeinary() {
     },[recipe])
 
     async function getRecipe() {
-        const recipeMarkdown = await fetchRecipe(ingredients)
-        setRecipe(recipeMarkdown)
-        return Promise.resolve()
+        try {
+            const base = await fetchRecipe(ingredients)
+            const imgRes = await fetch("/api/image", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt: base.image_prompt })
+            })
+
+            console.log(imgRes)
+
+            if(!imgRes.ok) {
+                console.error("Image API error", await imgRes.text())
+                return alert("Sorry, I couldn’t generate the photo.")
+            }
+
+            const imgData = await imgRes.json();
+            console.log("IMAGE JSON ➜", imgData);   // <= add this
+            const { url } = imgData;
+
+            // const { url } = await imgRes.json()
+
+            if(!url) {
+                console.error("Image API responded without a URL")
+                return alert("Image generation failed.")
+            }
+
+            setRecipe({ ...base, imageUrl: url })
+        } catch (err) {
+            console.error(err)
+            alert("Oops! Couldn't generate your recipe.")
+        }
     }
 
     function addIngredient(formData) 
@@ -29,7 +57,7 @@ export default function Claudeinary() {
         const newIngredient = formData.get("ingredient").trim()
 
         // If the input is empty, return early without updating state.
-        if (newIngredient === "") { return }
+        if (!newIngredient) return
         setIngredients(prevIngredients => [ ...prevIngredients, newIngredient ])
     }
 
@@ -51,7 +79,7 @@ export default function Claudeinary() {
                     Enter 5 ingredients you have at home, and let Chef Claude suggest a delicious recipe complete with easy-to-follow cooking instructions!
                 </p>
             </section>
-            <section className="fixed bottom-4 inset-x-0 max-w-[1024px] mx-auto p-6 s:flex-col z-10">
+            {!recipe && <section className="fixed bottom-4 inset-x-0 max-w-[1024px] mx-auto p-6 s:flex-col z-10">
                 <div className="flex p-2">
                     <form action={ addIngredient } className="flex flex-col w-full mx-auto md:flex-row items-center content-center gap-4 px-4">
                         <input 
@@ -72,7 +100,7 @@ export default function Claudeinary() {
                         </Button>
                     </form>
                 </div>
-            </section>
+            </section>}
             <section>
                 { ingredients.length > 0 && 
                 <IngredientsList 
@@ -80,14 +108,20 @@ export default function Claudeinary() {
                     getRecipe = { getRecipe }
                 />}
             </section>
-            <section className="mb-50">
-                {recipe && <ClaudeRecipe ref={ recipeSection } recipe={ recipe }/>}
-                {recipe && <div>
-                    <button  onClick={handleResetApp}>
+            {recipe && (
+                <section ref={ recipeSection } className="mb-20">
+                    <ClaudeRecipe ref={ recipeSection } recipe={ recipe }/>
+                    <Button
+                            onClick={ handleResetApp }
+                            className="w-full md:w-64 mt-4 inline-flex font-medium font-primary text-black py-3 hover:bg-black hover:text-white cursor-pointer transition delay-150 duration-300 ease-in-out"
+                            aria-label="start a new recipe"
+                            rightIcon="arrow_forward"
+                            iconSize="md-18"
+                    >
                         Start a new recipe
-                    </button>
-                </div>}
-            </section>          
+                    </Button>
+                </section>          
+            )}
         </main>
     )
 }
