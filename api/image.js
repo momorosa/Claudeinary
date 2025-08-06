@@ -35,4 +35,33 @@ export default async function handler(req, res) {
         .status(err.status ?? 500)
         .json({ message: err.error?.message ?? "Failed to generate image" })
     }
+
+    /* ── Call OpenAI Images (gpt-image-1) ────────────────────────────── */
+
+    // try {
+    //     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+
+    //     const { data } = await openai.images.generate({
+    //         model: "gpt-image-1",     
+    //         prompt,
+    //         size: "1024x1024",
+    //         quality: "medium",  
+    //     })
+
+    //     const b64 = data[0].b64_json
+
+    //     const imageUrl = `data:image/png;base64,${b64}`
+
+    //     if (!imageUrl) {
+    //         console.error("OpenAI returned no URL", data)
+    //         return res.status(502).json({ message: "No image URL returned" })
+    //     }
+
+    //     return res.status(200).json({ url: imageUrl })
+    // } catch (err) {
+    //     console.error("Image API error:", err)
+    //     return res
+    //     .status(err.status ?? 500)
+    //     .json({ message: err.error?.message ?? "Failed to generate image" })
+    // }
 }

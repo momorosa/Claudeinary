@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { motion } from "framer-motion"
 
 export default function Navbar() {
     return(
@@ -7,9 +8,13 @@ export default function Navbar() {
                 to="/"
                 aria-label='Go to intro page'
             >
-                <span className="material-icons cursor-pointer hover:text-white hover:scale-125 transition delay-150 duration-300 ease-in-out">
+                <motion.span
+                    whileHover={{ rotate:-10, scale: 1.2}}
+                    transition={{ type:"spring", stiffness:200 }}
+                    className="material-icons cursor-pointer hover:text-white"
+                >
                     home
-                </span>
+                </motion.span>
             </Link>
             
             <div>

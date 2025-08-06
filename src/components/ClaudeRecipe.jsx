@@ -1,12 +1,7 @@
-import { forwardRef, useState } from 'react'
+import { forwardRef } from 'react'
+import { motion } from "framer-motion"
 
-export default forwardRef(function ClaudeRecipe({ recipe }, ref) {
-
-    const [favorite, setFavorite] = useState(false)
-
-    function toggleFavorite() {
-        setFavorite(prev => !prev)
-    }
+export default forwardRef(function ClaudeRecipe({ recipe, isFavorited, onToggleFavorite }, ref) {
 
     console.log(recipe)
 
@@ -19,25 +14,28 @@ export default forwardRef(function ClaudeRecipe({ recipe }, ref) {
                         { recipe.title }
                     </h2>
                     { recipe && 
-                        <span
+                        <motion.span
                             role="button"
+                            whileTap={{ scale: 0.8 }}
                             tabIndex={ 0 }
-                            aria-label={ favorite ? "Remove from favorites" : "Add to favorites" }
-                            onClick={ toggleFavorite }
+                            aria-label={ isFavorited ? "Remove from favorites" : "Add to favorites" }
+                            onClick={ onToggleFavorite }
                             className={`material-icons hover:cursor-pointer select-none transition delay-150 duration-300 ease-in-out
-                                        ${favorite ? "text-red-500" : "text-gray-300"}`}
+                                        ${isFavorited ? "text-red-500" : "text-gray-300"}`}
                         >
-                            { favorite ? "favorite" : "favorite_border" }
-                        </span>
+                            { isFavorited ? "favorite" : "favorite_border" }
+                        </motion.span>
                     }
                 </div>
             </header>
-            <div className="flex">
-                <img
-                    className="py-6"
-                    src={ recipe.imageUrl }
-                />
-            </div>
+            { recipe.imageUrl && (
+                <div className="flex">
+                    <img
+                        className="py-6"
+                        src={ recipe.imageUrl }
+                        alt={ recipe.title }
+                    />
+                </div>)}
             <div className="flex flex-col my-4">
                 <h2 className="text-xl font-semibold py-2">
                     <span className="material-icons px-2 align-middle">assignment</span>

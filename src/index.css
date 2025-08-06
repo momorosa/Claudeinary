@@ -19,3 +19,15 @@ body {
     background: #ffbf40;
     margin: 0;
 }
+
+.scroll-fade::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 60px;          
+  pointer-events: none;
+  background: linear-gradient(to right, transparent, #f8bf40); 
+}
+
