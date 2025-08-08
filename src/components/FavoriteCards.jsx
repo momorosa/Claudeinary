@@ -29,7 +29,10 @@ export default function FavoriteCards({ items, onToggle, onSelect }) {
                                 <span
                                     role="button"
                                     tabIndex={ 0 }
-                                    onClick={() => onToggle(r)}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        onToggle(r)
+                                    }}
                                     className="material-icons absolute top-2 right-2 text-red-500 cursor-pointer group-hover:opacity-80 transition"
                                     aria-label="Remove favourite"
                                 >

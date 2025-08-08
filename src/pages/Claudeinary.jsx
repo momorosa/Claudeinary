@@ -111,7 +111,7 @@ export default function Claudeinary() {
                     initial={{ opacity:1, y:0} }
                     exit={{ opacity:0, y:16 }}
                     transition={{ duration:0.3 }}
-                    className="fixed bottom-4 inset-x-0 max-w-[1024px] mx-auto p-6 s:flex-col z-10"
+                    className="fixed bottom-4 inset-x-0 max-w-[1024px] mx-auto p-6 s:flex-col z-10 bg-cheese/75"
                 >
                     <div className="flex p-2">
                         <form
@@ -119,6 +119,7 @@ export default function Claudeinary() {
                             className="flex flex-col w-full mx-auto md:flex-row items-center content-center gap-4 px-4"
                         >
                             <input
+                                autoFocus
                                 type="text"
                                 placeholder="e.g. spinach"
                                 aria-label="Add ingredient"
