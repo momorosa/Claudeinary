@@ -6,11 +6,13 @@ import { motion, AnimatePresence } from "framer-motion"
 import Button from "../components/Button.jsx"
 import Navbar from "../components/Navbar.jsx"
 import FavoriteCards from "../components/FavoriteCards.jsx"
+import FavRecipeModal from "../components/FavRecipeModal.jsx"
 
 export default function Claudeinary() {
-    const [ingredients, setIngredients] = useState([])
-    const [recipe, setRecipe] = useState(null)
+    const [ ingredients, setIngredients ] = useState([])
+    const [ recipe, setRecipe ] = useState(null)
     const recipeSection = useRef(null)
+    const [ selected, setSelected ] = useState(null)
 
     const [favorites, setFavorites] = useState(() => {
         const saved = localStorage.getItem("favorites")
@@ -28,6 +30,14 @@ export default function Claudeinary() {
             }, 100)
         }
     }, [recipe])
+
+    useEffect(() => {
+        function handleEsc(e) {
+            if (e.key === "Escape") setSelected(null)
+        }
+        window.addEventListener("keydown", handleEsc)
+        return () => window.removeEventListener("keydown", handleEsc)
+    }, [])
 
     function toggleFavorite(recipe) {
         setFavorites((prev) => {
@@ -105,7 +115,7 @@ export default function Claudeinary() {
                 >
                     <div className="flex p-2">
                         <form
-                            action={addIngredient}
+                            action={ addIngredient }
                             className="flex flex-col w-full mx-auto md:flex-row items-center content-center gap-4 px-4"
                         >
                             <input
@@ -140,16 +150,16 @@ export default function Claudeinary() {
                     transition={{ duration: 0.4, ease: "easeOut" }}
                     className="flex flex-col w-full my-4 border-b border-warm-gray"
                 >
-                    <div className="w-full pb-4">
+                    <div className="w-full pb-4 font-semibold">
                         My Favorites:
-                        <p className="italic text-sm text-warm-gray"> • Note: Images are cached by OpenAI for ~24 h. Old thumbnails fall back to a placeholder.</p>
+                        <p className="italic text-sm font-light text-warm-gray"> • Note: Images are cached by OpenAI for ~24 h. Old thumbnails fall back to a placeholder.</p>
                     </div>
 
                     <div className="flex justify-between mb-4">
                         <FavoriteCards
-                            items={favorites}
-                            onToggle={toggleFavorite}
-                            className=""
+                            items={ favorites }
+                            onToggle={ toggleFavorite }
+                            onSelect={ setSelected }
                         />
                     </div>
                 </motion.section>
@@ -161,6 +171,20 @@ export default function Claudeinary() {
                 <IngredientsList ingredients={ ingredients } getRecipe={getRecipe} />
             )}
         </section>
+
+        <AnimatePresence>
+            { selected && (
+                <FavRecipeModal
+                    recipe={ selected }
+                    isFavorited={ favorites.some((f) => f.id === selected.id)}
+                    onToggleFavorite={() => toggleFavorite(selected)}
+                    onClose={() => setSelected(null)}
+                    // className="max-w-[1024px] mx-auto h-auto"
+                />
+
+            )
+            }
+        </AnimatePresence>
 
         <AnimatePresence mode="wait">
             {recipe && (

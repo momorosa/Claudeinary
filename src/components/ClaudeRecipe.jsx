@@ -1,5 +1,7 @@
 import { forwardRef } from 'react'
 import { motion } from "framer-motion"
+import imagePlaceHolder from '../assets/backgroundimg.png'
+import { image } from 'framer-motion/client'
 
 export default forwardRef(function ClaudeRecipe({ recipe, isFavorited, onToggleFavorite }, ref) {
 
@@ -33,6 +35,7 @@ export default forwardRef(function ClaudeRecipe({ recipe, isFavorited, onToggleF
                     <img
                         className="py-6"
                         src={ recipe.imageUrl }
+                        onError={ (e) => (e.currentTarget.src = imagePlaceHolder) }
                         alt={ recipe.title }
                     />
                 </div>)}

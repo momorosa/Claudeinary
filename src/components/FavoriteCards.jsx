@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import imagePlaceholder from '../assets/backgroundImg.png'
 
 
-export default function FavoriteCards({ items, onToggle }) {
+export default function FavoriteCards({ items, onToggle, onSelect }) {
     return(<>
             <div className="flex gap-4 overflow-x-auto pb-2
                  scroll-smooth snap-x snap-mandatory
@@ -11,7 +11,8 @@ export default function FavoriteCards({ items, onToggle }) {
                     {items.map((r) => (
                         <motion.div 
                             key={ r.id } 
-                            className="relative flex-shrink-0 w-[260px] sm:w-[300px] snap-start bg-white rounded shadow-xl/20"
+                            onClick={() => onSelect(r)}
+                            className="relative flex-shrink-0 w-[260px] sm:w-[300px] snap-start bg-white rounded shadow-xl/20 cursor-pointer"
                             initial={{ opacity:0, x:40 }}
                             animate={{ opacity:1, x:0 }}
                             exit={{ opacity:0, x:40 }}
