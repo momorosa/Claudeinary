@@ -1,10 +1,11 @@
 import Button from "./Button"
+import cheesedrawing from '../assets/cheesedrawing.png'
 
 export default function UI() {
     return (
         <main className="absolute left-0 top-0 w-screen z-10 pointer-events-auto">
             <div className="w-3/4 lg:w-auto absolute right-6 bottom-6">
-                <img src="src/assets/cheesedrawing.png" />
+                <img src={ cheesedrawing } />
             </div>
 
             <Section className="flex flex-col font-primary z-10">
